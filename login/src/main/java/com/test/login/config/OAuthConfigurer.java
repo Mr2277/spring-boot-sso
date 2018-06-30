@@ -20,30 +20,23 @@ public class OAuthConfigurer extends AuthorizationServerConfigurerAdapter {
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource(
-                "keystore.jks"), "tc123456".toCharArray()).getKeyPair("tycoonclient");
+        KeyPair keyPair = new KeyStoreKeyFactory(new ClassPathResource("keystore.jks"), "tc123456".toCharArray()).getKeyPair("tycoonclient");
         converter.setKeyPair(keyPair);
         return converter;
     }
 
     @Override
-    public void configure(ClientDetailsServiceConfigurer clients)
-            throws Exception {
-        clients.inMemory().withClient("ssoclient").secret("ssosecret")
-                .autoApprove(true)
-                .authorizedGrantTypes("authorization_code", "refresh_token").scopes("openid");
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.inMemory().withClient("ssoclient").secret("ssosecret").autoApprove(true).authorizedGrantTypes("authorization_code", "refresh_token").scopes("openid");
     }
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security)
-            throws Exception {
-        security.tokenKeyAccess("permitAll()").checkTokenAccess(
-                "isAuthenticated()").allowFormAuthenticationForClients();
+    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        security.tokenKeyAccess("permitAll()").checkTokenAccess("isAuthenticated()").allowFormAuthenticationForClients();
     }
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints)
-            throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.accessTokenConverter(jwtAccessTokenConverter());
     }
 
